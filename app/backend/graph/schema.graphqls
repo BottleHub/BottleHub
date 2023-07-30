@@ -1,28 +1,26 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
 type User {
-  id: ID!
+  username: String! @id
   name: String!
+  about: String
+  email: String!
+  avatarImageURL: String!
+  posts: [Post!] @hasInverse(field: postedBy)
+  following: [User] @hasInverse(field: followers)
+  followers: [User] @hasInverse(field: following)
 }
 
-type Query {
-  todos: [Todo!]!
+type Post {
+  id: ID!
+  postedBy: User!
+  imageURL: String!
+  description: String
+  likes: Int!
+  comments: [Comment!] @hasInverse(field: commentOn)
 }
 
-input NewTodo {
+type Comment {
+  id: ID!
   text: String!
-  userId: String!
-}
-
-type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  commentBy: User!
+  commentOn: Post!
 }
