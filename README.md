@@ -1,4 +1,4 @@
-# Bottlehub Official
+# BottleHub Official
 
 This is the official repository for everything Bottlehub.
 
