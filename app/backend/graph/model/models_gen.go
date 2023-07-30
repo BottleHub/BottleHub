@@ -11,23 +11,23 @@ type User struct {
 	About          string `json:"about"`
 	Email          string `json:"email"`
 	AvatarImageURL string `json:"avatarImageURL"`
-	Posts          Post   `json:"Posts"`
+	Posts          *Post  `json:"Posts"`
 	Following      int    `json:"following"`
 	Follower       int    `json:"follower"`
 }
 
 type Post struct {
 	id          string
-	postedBy    User
+	postedBy    *User
 	imageURL    string
 	description string
 	likes       int
-	comments    Comment
+	comments    *Comment
 }
 
 type Comment struct {
 	id        string
 	text      string
-	commentBy User
-	commentOn Post
+	commentBy *User
+	commentOn *Post
 }
