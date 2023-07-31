@@ -1,26 +1,91 @@
 type User {
-  username: String! @id
+  _id: String!
+  username: String!
+  # @id
   name: String!
   about: String
   email: String!
   avatarImageURL: String!
-  posts: [Post!] @hasInverse(field: postedBy)
-  following: [User] @hasInverse(field: followers)
-  followers: [User] @hasInverse(field: following)
+  posts: [Post!]
+  # @hasInverse(field: postedBy)
+  following: [User]
+  # @hasInverse(field: followers)
+  followers: [User]
+  # @hasInverse(field: following)
+  publicWallet: String!
+  privateWallet: String!
 }
 
 type Post {
-  id: ID!
+  _id: String!
   postedBy: User!
   imageURL: String!
   description: String
   likes: Int!
-  comments: [Comment!] @hasInverse(field: commentOn)
+  comments: [Comment!]
+  # @hasInverse(field: commentOn)
 }
 
 type Comment {
-  id: ID!
+  _id: String!
   text: String!
   commentBy: User!
   commentOn: Post!
+}
+
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+input FetchUser {
+  id: String!
+}
+
+input FetchPost {
+  id: String!
+}
+
+input FetchComment {
+  id: String!
+}
+
+input NewUser {
+  username: String!
+  # @id
+  name: String!
+  about: String
+  email: String!
+  avatarImageURL: String!
+  publicWallet: String!
+  privateWallet: String!
+}
+
+input NewPost {
+  postedBy: ID!
+  imageURL: String!
+  description: String
+  likes: Int!
+}
+
+input NewComment {
+  text: String!
+  commentBy: ID!
+  commentOn: ID!
+}
+
+type Query {
+  users: [User!]!
+  posts: [Post!]!
+  comments: [Comment!]!
+  user(input: FetchUser): User!
+  post(input: FetchPost): Post!
+  comment(input: FetchComment!): Comment!
+}
+
+type Mutation {
+  createUser(input: NewUser!): User!
+  createPost(input: NewPost!): Post!
+  createComment(input: NewComment!): Comment!
 }
