@@ -20,6 +20,7 @@ type DB struct {
 func ConnectDB() *DB {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(EnvMongoURI()))
 	if err != nil {
 		log.Fatal(err)
@@ -40,13 +41,12 @@ func ConnectDB() *DB {
 }
 
 func colHelper(db *DB, collectionName string) *mongo.Collection {
-	return db.client.Database("").Collection(collectionName)
+	return db.client.Database("UserBase").Collection(collectionName)
 }
 
 func (db *DB) ctxDeferHelper(collectionName string) (*mongo.Collection, context.Context) {
 	collection := colHelper(db, collectionName)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	return collection, ctx
 }
