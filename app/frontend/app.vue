@@ -1,5 +1,9 @@
 <template>
-  <NuxtLayout name="ionicapp">
-    <NuxtPage />
+  <NuxtLayout :name="layout">
+    <NuxtWelcome />
   </NuxtLayout>
 </template>
+
+<script setup lang="ts">
+const layout = "ionicapp";
+</script>
