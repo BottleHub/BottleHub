@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@nuxtjs/apollo": "^5.0.0-alpha.6",
     "@types/node": "^18",
     "autoprefixer": "^10.4.14",
     "nuxt": "^3.6.2",
