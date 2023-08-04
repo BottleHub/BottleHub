@@ -2,6 +2,9 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss", "nuxt-graphql-server"],
+  graphqlServer: {
+    url: "/api/graphql",
+  },
   ssr: false,
   css: [
     "@ionic/core/css/core.css",
