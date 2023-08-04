@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout :name="layout">
-    <NuxtWelcome />
+    <NuxtPage/>
   </NuxtLayout>
 </template>
 
