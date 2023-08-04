@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -10,15 +11,18 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@nuxt/image-edge": "^1.0.0-rc.1-28180077.d51e794",
     "@nuxtjs/apollo": "^5.0.0-alpha.6",
+    "@nuxtjs/color-mode": "^3.3.0",
     "@types/node": "^18",
     "autoprefixer": "^10.4.14",
     "nuxt": "^3.6.2",
+    "nuxt-icon": "^0.4.2",
     "postcss": "^8.4.25",
     "tailwindcss": "^3.3.2"
   },
   "dependencies": {
-    "@apollo/server": "^4.9.0",
+    "@apollo/server": "^4.9.1",
     "@as-integrations/h3": "^1.1.5",
     "@ionic/core": "^7.2.2",
     "@ionic/vue": "^7.2.2",
