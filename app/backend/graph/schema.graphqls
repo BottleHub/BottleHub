@@ -33,6 +33,24 @@ type Comment {
   commentOn: Post!
 }
 
+type Chatboard {
+  _id: String!
+  name: String!
+  imageURL: String!
+  description: String
+  members: [User!]
+  messages: [Message!]
+  # @hasInverse(field: commentOn)
+}
+
+type Message {
+  _id: String!
+  text: String
+  fileURL: String
+  messageBy: User!
+  messageOn: Chatboard!
+}
+
 enum Status {
   NOT_STARTED
   IN_PROGRESS
@@ -48,6 +66,14 @@ input FetchPost {
 }
 
 input FetchComment {
+  id: String!
+}
+
+input FetchChatboard {
+  id: String!
+}
+
+input FetchMessage {
   id: String!
 }
 
@@ -73,6 +99,22 @@ input NewComment {
   text: String!
   commentBy: ID!
   commentOn: ID!
+}
+
+input NewChatboard {
+  _id: String!
+  name: String!
+  imageURL: String!
+  description: String
+  # @hasInverse(field: commentOn)
+}
+
+input NewMessage {
+  _id: String!
+  text: String
+  fileURL: String
+  messageBy: ID!
+  messageOn: ID!
 }
 
 type Query {
