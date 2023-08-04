@@ -18,9 +18,13 @@
     "tailwindcss": "^3.3.2"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.0",
+    "@as-integrations/h3": "^1.1.5",
     "@ionic/core": "^7.2.2",
     "@ionic/vue": "^7.2.2",
     "@nuxtjs/ionic": "^0.12.1",
-    "@nuxtjs/tailwindcss": "^6.8.0"
+    "@nuxtjs/tailwindcss": "^6.8.0",
+    "graphql": "^16.7.1",
+    "nuxt-graphql-server": "^2.0.1"
   }
 }
