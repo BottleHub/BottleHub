@@ -32,6 +32,18 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return user, err
 }
 
+// CreateProject is the resolver for the createProject field.
+func (r *mutationResolver) CreateChatboard(ctx context.Context, input model.NewChatboard) (*model.Chatboard, error) {
+	user, err := db.CreateUser(&input)
+	return user, err
+}
+
+// CreateProject is the resolver for the createProject field.
+func (r *mutationResolver) CreateMessage(ctx context.Context, input model.NewMessage) (*model.Message, error) {
+	user, err := db.CreateUser(&input)
+	return user, err
+}
+
 // Owners is the resolver for the owners field.
 func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
 	comments, err := db.GetComments()
@@ -50,6 +62,18 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return users, err
 }
 
+// Owners is the resolver for the owners field.
+func (r *queryResolver) Chatboards(ctx context.Context) ([]*model.User, error) {
+	users, err := db.GetUsers()
+	return users, err
+}
+
+// Owners is the resolver for the owners field.
+func (r *queryResolver) Messages(ctx context.Context) ([]*model.User, error) {
+	users, err := db.GetUsers()
+	return users, err
+}
+
 // Owner is the resolver for the owner field.
 func (r *queryResolver) Comment(ctx context.Context, input model.FetchComment) (*model.Comment, error) {
 	comment, err := db.SingleComment(input.ID)
@@ -64,6 +88,18 @@ func (r *queryResolver) Post(ctx context.Context, input *model.FetchPost) (*mode
 
 // Owner is the resolver for the owner field.
 func (r *queryResolver) User(ctx context.Context, input *model.FetchUser) (*model.User, error) {
+	user, err := db.SingleUser(input.ID)
+	return user, err
+}
+
+// Owner is the resolver for the owner field.
+func (r *queryResolver) Chatboard(ctx context.Context, input *model.FetchChatboard) (*model.Chatboard, error) {
+	user, err := db.SingleUser(input.ID)
+	return user, err
+}
+
+// Owner is the resolver for the owner field.
+func (r *queryResolver) Message(ctx context.Context, input *model.FetchMessage) (*model.Message, error) {
 	user, err := db.SingleUser(input.ID)
 	return user, err
 }

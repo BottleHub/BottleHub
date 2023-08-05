@@ -121,13 +121,19 @@ type Query {
   users: [User!]!
   posts: [Post!]!
   comments: [Comment!]!
+  chatboards: [Chatboard!]!
+  messages: [Message!]!
   user(input: FetchUser): User!
   post(input: FetchPost): Post!
   comment(input: FetchComment!): Comment!
+  chatboard(input: FetchChatboard!): Chatboard!
+  message(input: FetchMessage!): Message!
 }
 
 type Mutation {
   createUser(input: NewUser!): User!
   createPost(input: NewPost!): Post!
   createComment(input: NewComment!): Comment!
+  createChatboard(input: NewChatboard!): Chatboard!
+  createMessage(input: NewMessage!): Message!
 }
