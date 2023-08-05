@@ -46,7 +46,8 @@ func colHelper(db *DB, collectionName string) *mongo.Collection {
 
 func (db *DB) ctxDeferHelper(collectionName string) (*mongo.Collection, context.Context) {
 	collection := colHelper(db, collectionName)
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	fmt.Println(cancel)
 
 	return collection, ctx
 }
@@ -105,6 +106,26 @@ func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	}
 
 	return user, err
+}
+
+func (db *DB) CreateChatboard(input *model.NewChatboard) (*model.Chatboard, error) {
+	res, err := db.resErrHelper("chatboards", input)
+
+	chatboard := &model.Chatboard{
+		ID: res.InsertedID.(primitive.ObjectID).Hex(),
+	}
+
+	return chatboard, err
+}
+
+func (db *DB) CreateMessage(input *model.NewMessage) (*model.Message, error) {
+	res, err := db.resErrHelper("messages", input)
+
+	message := &model.Message{
+		ID: res.InsertedID.(primitive.ObjectID).Hex(),
+	}
+
+	return message, err
 }
 
 func (db *DB) GetComments() ([]*model.Comment, error) {
@@ -173,6 +194,50 @@ func (db *DB) GetUsers() ([]*model.User, error) {
 	return users, err
 }
 
+func (db *DB) GetChatboards() ([]*model.Chatboard, error) {
+	collection, ctx := db.ctxDeferHelper("chatboards")
+	var chatboards []*model.Chatboard
+
+	res, err := collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer res.Close(ctx)
+	for res.Next(ctx) {
+		var singleChatboard *model.Chatboard
+		if err = res.Decode(&singleChatboard); err != nil {
+			log.Fatal(err)
+		}
+		chatboards = append(chatboards, singleChatboard)
+	}
+
+	return chatboards, err
+}
+
+func (db *DB) GetMessages() ([]*model.Message, error) {
+	collection, ctx := db.ctxDeferHelper("messages")
+	var messages []*model.Message
+
+	res, err := collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer res.Close(ctx)
+	for res.Next(ctx) {
+		var singleMessage *model.Message
+		if err = res.Decode(&singleMessage); err != nil {
+			log.Fatal(err)
+		}
+		messages = append(messages, singleMessage)
+	}
+
+	return messages, err
+}
+
 func (db *DB) SingleComment(ID string) (*model.Comment, error) {
 	collection, ctx := db.ctxDeferHelper("comments")
 	var comment *model.Comment
@@ -204,4 +269,26 @@ func (db *DB) SingleUser(ID string) (*model.User, error) {
 	err := collection.FindOne(ctx, bson.M{"_id": objId}).Decode(&user)
 
 	return user, err
+}
+
+func (db *DB) SingleChatboard(ID string) (*model.Chatboard, error) {
+	collection, ctx := db.ctxDeferHelper("chatboards")
+	var chatboard *model.Chatboard
+
+	objId, _ := primitive.ObjectIDFromHex(ID)
+
+	err := collection.FindOne(ctx, bson.M{"_id": objId}).Decode(&chatboard)
+
+	return chatboard, err
+}
+
+func (db *DB) SingleMessage(ID string) (*model.Message, error) {
+	collection, ctx := db.ctxDeferHelper("messages")
+	var message *model.Message
+
+	objId, _ := primitive.ObjectIDFromHex(ID)
+
+	err := collection.FindOne(ctx, bson.M{"_id": objId}).Decode(&message)
+
+	return message, err
 }

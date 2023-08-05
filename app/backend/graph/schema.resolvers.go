@@ -34,14 +34,14 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 
 // CreateProject is the resolver for the createProject field.
 func (r *mutationResolver) CreateChatboard(ctx context.Context, input model.NewChatboard) (*model.Chatboard, error) {
-	user, err := db.CreateUser(&input)
-	return user, err
+	chatboard, err := db.CreateChatboard(&input)
+	return chatboard, err
 }
 
 // CreateProject is the resolver for the createProject field.
 func (r *mutationResolver) CreateMessage(ctx context.Context, input model.NewMessage) (*model.Message, error) {
-	user, err := db.CreateUser(&input)
-	return user, err
+	message, err := db.CreateMessage(&input)
+	return message, err
 }
 
 // Owners is the resolver for the owners field.
@@ -63,15 +63,15 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 }
 
 // Owners is the resolver for the owners field.
-func (r *queryResolver) Chatboards(ctx context.Context) ([]*model.User, error) {
-	users, err := db.GetUsers()
-	return users, err
+func (r *queryResolver) Chatboards(ctx context.Context) ([]*model.Chatboard, error) {
+	chatboard, err := db.GetChatboards()
+	return chatboard, err
 }
 
 // Owners is the resolver for the owners field.
-func (r *queryResolver) Messages(ctx context.Context) ([]*model.User, error) {
-	users, err := db.GetUsers()
-	return users, err
+func (r *queryResolver) Messages(ctx context.Context) ([]*model.Message, error) {
+	messages, err := db.GetMessages()
+	return messages, err
 }
 
 // Owner is the resolver for the owner field.
@@ -93,15 +93,15 @@ func (r *queryResolver) User(ctx context.Context, input *model.FetchUser) (*mode
 }
 
 // Owner is the resolver for the owner field.
-func (r *queryResolver) Chatboard(ctx context.Context, input *model.FetchChatboard) (*model.Chatboard, error) {
-	user, err := db.SingleUser(input.ID)
-	return user, err
+func (r *queryResolver) Chatboard(ctx context.Context, input model.FetchChatboard) (*model.Chatboard, error) {
+	chatboard, err := db.SingleChatboard(input.ID)
+	return chatboard, err
 }
 
 // Owner is the resolver for the owner field.
-func (r *queryResolver) Message(ctx context.Context, input *model.FetchMessage) (*model.Message, error) {
-	user, err := db.SingleUser(input.ID)
-	return user, err
+func (r *queryResolver) Message(ctx context.Context, input model.FetchMessage) (*model.Message, error) {
+	message, err := db.SingleMessage(input.ID)
+	return message, err
 }
 
 // Mutation returns MutationResolver implementation.
