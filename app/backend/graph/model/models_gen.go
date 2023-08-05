@@ -8,6 +8,15 @@ import (
 	"strconv"
 )
 
+type Chatboard struct {
+	ID          string     `json:"_id"`
+	Name        string     `json:"name"`
+	ImageURL    string     `json:"imageURL"`
+	Description *string    `json:"description,omitempty"`
+	Members     []*User    `json:"members,omitempty"`
+	Messages    []*Message `json:"messages,omitempty"`
+}
+
 type Comment struct {
 	ID        string `json:"_id"`
 	Text      string `json:"text"`
@@ -15,7 +24,15 @@ type Comment struct {
 	CommentOn *Post  `json:"commentOn"`
 }
 
+type FetchChatboard struct {
+	ID string `json:"id"`
+}
+
 type FetchComment struct {
+	ID string `json:"id"`
+}
+
+type FetchMessage struct {
 	ID string `json:"id"`
 }
 
@@ -27,10 +44,33 @@ type FetchUser struct {
 	ID string `json:"id"`
 }
 
+type Message struct {
+	ID        string     `json:"_id"`
+	Text      *string    `json:"text,omitempty"`
+	FileURL   *string    `json:"fileURL,omitempty"`
+	MessageBy *User      `json:"messageBy"`
+	MessageOn *Chatboard `json:"messageOn"`
+}
+
+type NewChatboard struct {
+	ID          string  `json:"_id"`
+	Name        string  `json:"name"`
+	ImageURL    string  `json:"imageURL"`
+	Description *string `json:"description,omitempty"`
+}
+
 type NewComment struct {
 	Text      string `json:"text"`
 	CommentBy string `json:"commentBy"`
 	CommentOn string `json:"commentOn"`
+}
+
+type NewMessage struct {
+	ID        string  `json:"_id"`
+	Text      *string `json:"text,omitempty"`
+	FileURL   *string `json:"fileURL,omitempty"`
+	MessageBy string  `json:"messageBy"`
+	MessageOn string  `json:"messageOn"`
 }
 
 type NewPost struct {
