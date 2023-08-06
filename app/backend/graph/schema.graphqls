@@ -150,6 +150,7 @@ type Query {
   comment(input: FetchComment!): Comment!
   chatboard(input: FetchChatboard!): Chatboard!
   message(input: FetchMessage!): Message!
+  links: [Link!]!
 }
 
 type Mutation {
