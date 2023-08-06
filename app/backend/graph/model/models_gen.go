@@ -9,7 +9,7 @@ import (
 )
 
 type Chatboard struct {
-	ID          string     `json:"_id"`
+	ID          string     `json:"id"`
 	Name        string     `json:"name"`
 	ImageURL    string     `json:"imageURL"`
 	Description *string    `json:"description,omitempty"`
@@ -18,7 +18,7 @@ type Chatboard struct {
 }
 
 type Comment struct {
-	ID        string `json:"_id"`
+	ID        string `json:"id"`
 	Text      string `json:"text"`
 	CommentBy *User  `json:"commentBy"`
 	CommentOn *Post  `json:"commentOn"`
@@ -44,8 +44,20 @@ type FetchUser struct {
 	ID string `json:"id"`
 }
 
+type Link struct {
+	ID      string `json:"id"`
+	Title   string `json:"title"`
+	Address string `json:"address"`
+	User    *User  `json:"user"`
+}
+
+type Login struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 type Message struct {
-	ID        string     `json:"_id"`
+	ID        string     `json:"id"`
 	Text      *string    `json:"text,omitempty"`
 	FileURL   *string    `json:"fileURL,omitempty"`
 	MessageBy *User      `json:"messageBy"`
@@ -63,6 +75,11 @@ type NewComment struct {
 	Text      string `json:"text"`
 	CommentBy string `json:"commentBy"`
 	CommentOn string `json:"commentOn"`
+}
+
+type NewLink struct {
+	Title   string `json:"title"`
+	Address string `json:"address"`
 }
 
 type NewMessage struct {
@@ -86,12 +103,13 @@ type NewUser struct {
 	About          *string `json:"about,omitempty"`
 	Email          string  `json:"email"`
 	AvatarImageURL string  `json:"avatarImageURL"`
+	Password       string  `json:"password"`
 	PublicWallet   string  `json:"publicWallet"`
 	PrivateWallet  string  `json:"privateWallet"`
 }
 
 type Post struct {
-	ID          string     `json:"_id"`
+	ID          string     `json:"id"`
 	PostedBy    *User      `json:"postedBy"`
 	ImageURL    string     `json:"imageURL"`
 	Description *string    `json:"description,omitempty"`
@@ -99,8 +117,12 @@ type Post struct {
 	Comments    []*Comment `json:"comments,omitempty"`
 }
 
+type RefreshTokenInput struct {
+	Token string `json:"token"`
+}
+
 type User struct {
-	ID             string  `json:"_id"`
+	ID             string  `json:"id"`
 	Username       string  `json:"username"`
 	Name           string  `json:"name"`
 	About          *string `json:"about,omitempty"`

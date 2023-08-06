@@ -1,5 +1,5 @@
 type User {
-  _id: String!
+  id: String!
   username: String!
   # @id
   name: String!
@@ -17,7 +17,7 @@ type User {
 }
 
 type Post {
-  _id: String!
+  id: String!
   postedBy: User!
   imageURL: String!
   description: String
@@ -27,14 +27,14 @@ type Post {
 }
 
 type Comment {
-  _id: String!
+  id: String!
   text: String!
   commentBy: User!
   commentOn: Post!
 }
 
 type Chatboard {
-  _id: String!
+  id: String!
   name: String!
   imageURL: String!
   description: String
@@ -44,11 +44,18 @@ type Chatboard {
 }
 
 type Message {
-  _id: String!
+  id: String!
   text: String
   fileURL: String
   messageBy: User!
   messageOn: Chatboard!
+}
+
+type Link {
+  id: ID!
+  title: String!
+  address: String!
+  user: User!
 }
 
 enum Status {
@@ -84,8 +91,14 @@ input NewUser {
   about: String
   email: String!
   avatarImageURL: String!
+  password: String!
   publicWallet: String!
   privateWallet: String!
+}
+
+input Login {
+  username: String!
+  password: String!
 }
 
 input NewPost {
@@ -117,6 +130,15 @@ input NewMessage {
   messageOn: ID!
 }
 
+input NewLink {
+  title: String!
+  address: String!
+}
+
+input RefreshTokenInput{
+  token: String!
+}
+
 type Query {
   users: [User!]!
   posts: [Post!]!
@@ -136,4 +158,6 @@ type Mutation {
   createComment(input: NewComment!): Comment!
   createChatboard(input: NewChatboard!): Chatboard!
   createMessage(input: NewMessage!): Message!
+  login(input: Login!): String!
+  refreshToken(input: RefreshTokenInput!): String!
 }

@@ -74,6 +74,17 @@ func (r *queryResolver) Messages(ctx context.Context) ([]*model.Message, error) 
 	return messages, err
 }
 
+func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
+	var links []*model.Link
+	dummyLink := model.Link{
+		Title:   "our dummy link",
+		Address: "https://address.org",
+		User:    &model.User{Name: "admin"},
+	}
+	links = append(links, &dummyLink)
+	return links, nil
+}
+
 // Owner is the resolver for the owner field.
 func (r *queryResolver) Comment(ctx context.Context, input model.FetchComment) (*model.Comment, error) {
 	comment, err := db.SingleComment(input.ID)
@@ -104,6 +115,16 @@ func (r *queryResolver) Message(ctx context.Context, input model.FetchMessage) (
 	return message, err
 }
 
+// Login implements MutationResolver.
+func (*mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
+	panic("unimplemented")
+}
+
+// RefreshToken implements MutationResolver.
+func (*mutationResolver) RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error) {
+	panic("unimplemented")
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -111,4 +132,5 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
+
 type queryResolver struct{ *Resolver }
