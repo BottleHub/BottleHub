@@ -1,11 +1,12 @@
 type User {
-  _id: String!
+  id: String!
   username: String!
   # @id
   name: String!
   about: String
   email: String!
   avatarImageURL: String!
+  password: String!
   posts: [Post!]
   # @hasInverse(field: postedBy)
   following: [User]
@@ -13,11 +14,11 @@ type User {
   followers: [User]
   # @hasInverse(field: following)
   publicWallet: String!
-  privateWallet: String!
+  privateKey: String!
 }
 
 type Post {
-  _id: String!
+  id: String!
   postedBy: User!
   imageURL: String!
   description: String
@@ -27,14 +28,14 @@ type Post {
 }
 
 type Comment {
-  _id: String!
+  id: String!
   text: String!
   commentBy: User!
   commentOn: Post!
 }
 
 type Chatboard {
-  _id: String!
+  id: String!
   name: String!
   imageURL: String!
   description: String
@@ -44,11 +45,18 @@ type Chatboard {
 }
 
 type Message {
-  _id: String!
+  id: String!
   text: String
   fileURL: String
   messageBy: User!
   messageOn: Chatboard!
+}
+
+type Link {
+  id: ID!
+  title: String!
+  address: String!
+  user: User!
 }
 
 enum Status {
@@ -84,8 +92,12 @@ input NewUser {
   about: String
   email: String!
   avatarImageURL: String!
-  publicWallet: String!
-  privateWallet: String!
+  password: String!
+}
+
+input Login {
+  username: String!
+  password: String!
 }
 
 input NewPost {
@@ -117,6 +129,15 @@ input NewMessage {
   messageOn: ID!
 }
 
+input NewLink {
+  title: String!
+  address: String!
+}
+
+input RefreshTokenInput{
+  token: String!
+}
+
 type Query {
   users: [User!]!
   posts: [Post!]!
@@ -128,6 +149,7 @@ type Query {
   comment(input: FetchComment!): Comment!
   chatboard(input: FetchChatboard!): Chatboard!
   message(input: FetchMessage!): Message!
+  links: [Link!]!
 }
 
 type Mutation {
@@ -136,4 +158,7 @@ type Mutation {
   createComment(input: NewComment!): Comment!
   createChatboard(input: NewChatboard!): Chatboard!
   createMessage(input: NewMessage!): Message!
+  createLink(input: NewLink!): Link!
+  login(input: Login!): String!
+  refreshToken(input: RefreshTokenInput!): String!
 }
