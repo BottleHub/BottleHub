@@ -6,6 +6,7 @@ type User {
   about: String
   email: String!
   avatarImageURL: String!
+  password: String!
   posts: [Post!]
   # @hasInverse(field: postedBy)
   following: [User]
@@ -13,7 +14,7 @@ type User {
   followers: [User]
   # @hasInverse(field: following)
   publicWallet: String!
-  privateWallet: String!
+  privateKey: String!
 }
 
 type Post {
@@ -92,8 +93,6 @@ input NewUser {
   email: String!
   avatarImageURL: String!
   password: String!
-  publicWallet: String!
-  privateWallet: String!
 }
 
 input Login {
@@ -159,6 +158,7 @@ type Mutation {
   createComment(input: NewComment!): Comment!
   createChatboard(input: NewChatboard!): Chatboard!
   createMessage(input: NewMessage!): Message!
+  createLink(input: NewLink!): Link!
   login(input: Login!): String!
   refreshToken(input: RefreshTokenInput!): String!
 }

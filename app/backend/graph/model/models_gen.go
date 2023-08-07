@@ -104,8 +104,6 @@ type NewUser struct {
 	Email          string  `json:"email"`
 	AvatarImageURL string  `json:"avatarImageURL"`
 	Password       string  `json:"password"`
-	PublicWallet   string  `json:"publicWallet"`
-	PrivateWallet  string  `json:"privateWallet"`
 }
 
 type Post struct {
@@ -128,11 +126,12 @@ type User struct {
 	About          *string `json:"about,omitempty"`
 	Email          string  `json:"email"`
 	AvatarImageURL string  `json:"avatarImageURL"`
+	Password       string  `json:"password"`
 	Posts          []*Post `json:"posts,omitempty"`
 	Following      []*User `json:"following,omitempty"`
 	Followers      []*User `json:"followers,omitempty"`
 	PublicWallet   string  `json:"publicWallet"`
-	PrivateWallet  string  `json:"privateWallet"`
+	PrivateKey     string  `json:"privateKey"`
 }
 
 type Status string
