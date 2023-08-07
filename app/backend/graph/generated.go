@@ -79,6 +79,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateChatboard func(childComplexity int, input model.NewChatboard) int
 		CreateComment   func(childComplexity int, input model.NewComment) int
+		CreateLink      func(childComplexity int, input model.NewLink) int
 		CreateMessage   func(childComplexity int, input model.NewMessage) int
 		CreatePost      func(childComplexity int, input model.NewPost) int
 		CreateUser      func(childComplexity int, input model.NewUser) int
@@ -117,8 +118,9 @@ type ComplexityRoot struct {
 		Following      func(childComplexity int) int
 		ID             func(childComplexity int) int
 		Name           func(childComplexity int) int
+		Password       func(childComplexity int) int
 		Posts          func(childComplexity int) int
-		PrivateWallet  func(childComplexity int) int
+		PrivateKey     func(childComplexity int) int
 		PublicWallet   func(childComplexity int) int
 		Username       func(childComplexity int) int
 	}
@@ -130,6 +132,7 @@ type MutationResolver interface {
 	CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error)
 	CreateChatboard(ctx context.Context, input model.NewChatboard) (*model.Chatboard, error)
 	CreateMessage(ctx context.Context, input model.NewMessage) (*model.Message, error)
+	CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error)
 	Login(ctx context.Context, input model.Login) (string, error)
 	RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error)
 }
@@ -318,6 +321,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateComment(childComplexity, args["input"].(model.NewComment)), true
+
+	case "Mutation.createLink":
+		if e.complexity.Mutation.CreateLink == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createLink_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateLink(childComplexity, args["input"].(model.NewLink)), true
 
 	case "Mutation.createMessage":
 		if e.complexity.Mutation.CreateMessage == nil {
@@ -572,6 +587,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Name(childComplexity), true
 
+	case "User.password":
+		if e.complexity.User.Password == nil {
+			break
+		}
+
+		return e.complexity.User.Password(childComplexity), true
+
 	case "User.posts":
 		if e.complexity.User.Posts == nil {
 			break
@@ -579,12 +601,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Posts(childComplexity), true
 
-	case "User.privateWallet":
-		if e.complexity.User.PrivateWallet == nil {
+	case "User.privateKey":
+		if e.complexity.User.PrivateKey == nil {
 			break
 		}
 
-		return e.complexity.User.PrivateWallet(childComplexity), true
+		return e.complexity.User.PrivateKey(childComplexity), true
 
 	case "User.publicWallet":
 		if e.complexity.User.PublicWallet == nil {
@@ -759,6 +781,21 @@ func (ec *executionContext) field_Mutation_createComment_args(ctx context.Contex
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewComment2bottlehubᚋgraphᚋmodelᚐNewComment(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createLink_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewLink
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewLink2bottlehubᚋgraphᚋmodelᚐNewLink(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1191,6 +1228,8 @@ func (ec *executionContext) fieldContext_Chatboard_members(ctx context.Context, 
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -1199,8 +1238,8 @@ func (ec *executionContext) fieldContext_Chatboard_members(ctx context.Context, 
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1400,6 +1439,8 @@ func (ec *executionContext) fieldContext_Comment_commentBy(ctx context.Context, 
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -1408,8 +1449,8 @@ func (ec *executionContext) fieldContext_Comment_commentBy(ctx context.Context, 
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1658,6 +1699,8 @@ func (ec *executionContext) fieldContext_Link_user(ctx context.Context, field gr
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -1666,8 +1709,8 @@ func (ec *executionContext) fieldContext_Link_user(ctx context.Context, field gr
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1852,6 +1895,8 @@ func (ec *executionContext) fieldContext_Message_messageBy(ctx context.Context, 
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -1860,8 +1905,8 @@ func (ec *executionContext) fieldContext_Message_messageBy(ctx context.Context, 
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1978,6 +2023,8 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -1986,8 +2033,8 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2276,6 +2323,71 @@ func (ec *executionContext) fieldContext_Mutation_createMessage(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createLink(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createLink(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateLink(rctx, fc.Args["input"].(model.NewLink))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Link)
+	fc.Result = res
+	return ec.marshalNLink2ᚖbottlehubᚋgraphᚋmodelᚐLink(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createLink(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Link_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Link_title(ctx, field)
+			case "address":
+				return ec.fieldContext_Link_address(ctx, field)
+			case "user":
+				return ec.fieldContext_Link_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Link", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createLink_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_login(ctx, field)
 	if err != nil {
@@ -2481,6 +2593,8 @@ func (ec *executionContext) fieldContext_Post_postedBy(ctx context.Context, fiel
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -2489,8 +2603,8 @@ func (ec *executionContext) fieldContext_Post_postedBy(ctx context.Context, fiel
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2729,6 +2843,8 @@ func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field 
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -2737,8 +2853,8 @@ func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field 
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -3023,6 +3139,8 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -3031,8 +3149,8 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -3765,6 +3883,50 @@ func (ec *executionContext) fieldContext_User_avatarImageURL(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _User_password(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_password(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Password, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _User_posts(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_posts(ctx, field)
 	if err != nil {
@@ -3868,6 +4030,8 @@ func (ec *executionContext) fieldContext_User_following(ctx context.Context, fie
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -3876,8 +4040,8 @@ func (ec *executionContext) fieldContext_User_following(ctx context.Context, fie
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -3933,6 +4097,8 @@ func (ec *executionContext) fieldContext_User_followers(ctx context.Context, fie
 				return ec.fieldContext_User_email(ctx, field)
 			case "avatarImageURL":
 				return ec.fieldContext_User_avatarImageURL(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			case "posts":
 				return ec.fieldContext_User_posts(ctx, field)
 			case "following":
@@ -3941,8 +4107,8 @@ func (ec *executionContext) fieldContext_User_followers(ctx context.Context, fie
 				return ec.fieldContext_User_followers(ctx, field)
 			case "publicWallet":
 				return ec.fieldContext_User_publicWallet(ctx, field)
-			case "privateWallet":
-				return ec.fieldContext_User_privateWallet(ctx, field)
+			case "privateKey":
+				return ec.fieldContext_User_privateKey(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -3994,8 +4160,8 @@ func (ec *executionContext) fieldContext_User_publicWallet(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _User_privateWallet(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_privateWallet(ctx, field)
+func (ec *executionContext) _User_privateKey(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_privateKey(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4008,7 +4174,7 @@ func (ec *executionContext) _User_privateWallet(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PrivateWallet, nil
+		return obj.PrivateKey, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4025,7 +4191,7 @@ func (ec *executionContext) _User_privateWallet(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_privateWallet(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_privateKey(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -6263,7 +6429,7 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"username", "name", "about", "email", "avatarImageURL", "password", "publicWallet", "privateWallet"}
+	fieldsInOrder := [...]string{"username", "name", "about", "email", "avatarImageURL", "password"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -6324,24 +6490,6 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 				return it, err
 			}
 			it.Password = data
-		case "publicWallet":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("publicWallet"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.PublicWallet = data
-		case "privateWallet":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("privateWallet"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.PrivateWallet = data
 		}
 	}
 
@@ -6651,6 +6799,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "createMessage":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createMessage(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createLink":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createLink(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -7080,6 +7235,11 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "password":
+			out.Values[i] = ec._User_password(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "posts":
 			out.Values[i] = ec._User_posts(ctx, field, obj)
 		case "following":
@@ -7091,8 +7251,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "privateWallet":
-			out.Values[i] = ec._User_privateWallet(ctx, field, obj)
+		case "privateKey":
+			out.Values[i] = ec._User_privateKey(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -7621,6 +7781,10 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) marshalNLink2bottlehubᚋgraphᚋmodelᚐLink(ctx context.Context, sel ast.SelectionSet, v model.Link) graphql.Marshaler {
+	return ec._Link(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNLink2ᚕᚖbottlehubᚋgraphᚋmodelᚐLinkᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Link) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -7745,6 +7909,11 @@ func (ec *executionContext) unmarshalNNewChatboard2bottlehubᚋgraphᚋmodelᚐN
 
 func (ec *executionContext) unmarshalNNewComment2bottlehubᚋgraphᚋmodelᚐNewComment(ctx context.Context, v interface{}) (model.NewComment, error) {
 	res, err := ec.unmarshalInputNewComment(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNNewLink2bottlehubᚋgraphᚋmodelᚐNewLink(ctx context.Context, v interface{}) (model.NewLink, error) {
+	res, err := ec.unmarshalInputNewLink(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
