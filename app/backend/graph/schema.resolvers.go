@@ -44,6 +44,16 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input model.NewMes
 	return message, err
 }
 
+func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+	var link model.Link
+	var user model.User
+	link.Address = input.Address
+	link.Title = input.Title
+	user.Name = "test"
+	link.User = &user
+	return &link, nil
+}
+
 // Owners is the resolver for the owners field.
 func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
 	comments, err := db.GetComments()
@@ -72,6 +82,17 @@ func (r *queryResolver) Chatboards(ctx context.Context) ([]*model.Chatboard, err
 func (r *queryResolver) Messages(ctx context.Context) ([]*model.Message, error) {
 	messages, err := db.GetMessages()
 	return messages, err
+}
+
+func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
+	var links []*model.Link
+	dummyLink := model.Link{
+		Title:   "our dummy link",
+		Address: "https://address.org",
+		User:    &model.User{Name: "admin"},
+	}
+	links = append(links, &dummyLink)
+	return links, nil
 }
 
 // Owner is the resolver for the owner field.
@@ -104,6 +125,16 @@ func (r *queryResolver) Message(ctx context.Context, input model.FetchMessage) (
 	return message, err
 }
 
+// Login implements MutationResolver.
+func (*mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
+	panic("unimplemented")
+}
+
+// RefreshToken implements MutationResolver.
+func (*mutationResolver) RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error) {
+	panic("unimplemented")
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -111,4 +142,5 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
+
 type queryResolver struct{ *Resolver }
