@@ -1,7 +1,7 @@
 package configs
 
 import (
-	"bottlehub/client"
+	"bottlehub/blockchain/client"
 	"bottlehub/graph/model"
 	"context"
 	"fmt"
