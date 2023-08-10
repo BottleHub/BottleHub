@@ -95,7 +95,7 @@ func (db *DB) CreatePost(input *model.NewPost) (*model.Post, error) {
 
 func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	password, _ := HashPassword(input.Password)
-	// privateKey, publicWallet := client.CreateWallet()
+	privateKey, privateAddress, publicKey, publicAddress := client.CreateWallet()
 	input.Password = password
 	res, err := db.resErrHelper("users", input)
 
@@ -110,6 +110,20 @@ func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	}
 
 	return user, err
+}
+
+func (db *DB) CreateWallet(input *model.NewWallet) (*model.Wallet, error) {
+	res, err := db.resErrHelper("wallets", input)
+
+	wallet := &model.Wallet{
+		ID:             res.InsertedID.(primitive.ObjectID).Hex(),
+		PrivateKey:     input.PrivateKey,
+		PrivateAddress: input.PrivateAddress,
+		PublicKey:      input.PublicKey,
+		PublicAddress:  input.PublicAddress,
+	}
+
+	return wallet, err
 }
 
 func (db *DB) CreateChatboard(input *model.NewChatboard) (*model.Chatboard, error) {

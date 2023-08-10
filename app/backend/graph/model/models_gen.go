@@ -44,6 +44,10 @@ type FetchUser struct {
 	ID string `json:"id"`
 }
 
+type FetchWallet struct {
+	ID string `json:"id"`
+}
+
 type Link struct {
 	ID      string `json:"id"`
 	Title   string `json:"title"`
@@ -72,6 +76,7 @@ type NewChatboard struct {
 }
 
 type NewComment struct {
+	ID        string `json:"_id"`
 	Text      string `json:"text"`
 	CommentBy string `json:"commentBy"`
 	CommentOn string `json:"commentOn"`
@@ -91,6 +96,7 @@ type NewMessage struct {
 }
 
 type NewPost struct {
+	ID          string  `json:"_id"`
 	PostedBy    string  `json:"postedBy"`
 	ImageURL    string  `json:"imageURL"`
 	Description *string `json:"description,omitempty"`
@@ -104,6 +110,13 @@ type NewUser struct {
 	Email          string  `json:"email"`
 	AvatarImageURL string  `json:"avatarImageURL"`
 	Password       string  `json:"password"`
+}
+
+type NewWallet struct {
+	PrivateKey     string `json:"privateKey"`
+	PrivateAddress string `json:"privateAddress"`
+	PublicKey      string `json:"publicKey"`
+	PublicAddress  string `json:"publicAddress"`
 }
 
 type Post struct {
@@ -130,8 +143,15 @@ type User struct {
 	Posts          []*Post `json:"posts,omitempty"`
 	Following      []*User `json:"following,omitempty"`
 	Followers      []*User `json:"followers,omitempty"`
-	PublicWallet   string  `json:"publicWallet"`
-	PrivateKey     string  `json:"privateKey"`
+	Wallet         *Wallet `json:"wallet"`
+}
+
+type Wallet struct {
+	ID             string `json:"id"`
+	PrivateKey     string `json:"privateKey"`
+	PrivateAddress string `json:"privateAddress"`
+	PublicKey      string `json:"publicKey"`
+	PublicAddress  string `json:"publicAddress"`
 }
 
 type Status string
