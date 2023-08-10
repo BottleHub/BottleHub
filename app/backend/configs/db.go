@@ -1,7 +1,7 @@
 package configs
 
 import (
-	"bottlehub/client"
+	"bottlehub/blockchain/client"
 	"bottlehub/graph/model"
 	"context"
 	"fmt"
@@ -38,7 +38,7 @@ func ConnectDB() *DB {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to MongoDB")
+	fmt.Println("Connected to MongoDB!")
 	return &DB{client: client}
 }
 
@@ -95,7 +95,7 @@ func (db *DB) CreatePost(input *model.NewPost) (*model.Post, error) {
 
 func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	password, _ := HashPassword(input.Password)
-	privateKey, publicWallet := client.CreateWallet()
+	// privateKey, publicWallet := client.CreateWallet()
 	input.Password = password
 	res, err := db.resErrHelper("users", input)
 
@@ -107,8 +107,6 @@ func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 		Email:          input.Email,
 		AvatarImageURL: input.AvatarImageURL,
 		Password:       password,
-		PublicWallet:   publicWallet,
-		PrivateKey:     privateKey,
 	}
 
 	return user, err
