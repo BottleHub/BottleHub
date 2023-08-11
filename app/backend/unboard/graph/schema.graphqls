@@ -1,0 +1,186 @@
+type User {
+  id: ID!
+  username: String!
+  # @id
+  name: String!
+  about: String
+  email: String!
+  avatarImageURL: String!
+  password: String!
+  posts: [Post!]
+  # @hasInverse(field: postedBy)
+  following: [User]
+  # @hasInverse(field: followers)
+  followers: [User]
+  # @hasInverse(field: following)
+  wallet: Wallet!
+}
+
+type Wallet {
+  id: ID!
+  privateKey: String!
+  privateAddress: String!
+  publicKey: String!
+  publicAddress: String!
+}
+
+type Post {
+  id: ID!
+  postedBy: User!
+  imageURL: String!
+  description: String
+  likes: Int!
+  comments: [Comment!]
+  # @hasInverse(field: commentOn)
+}
+
+type Comment {
+  id: String!
+  text: String!
+  commentBy: User!
+  commentOn: Post!
+}
+
+type Chatboard {
+  id: ID!
+  name: String!
+  imageURL: String!
+  description: String
+  members: [User!]
+  messages: [Message!]
+  # @hasInverse(field: commentOn)
+}
+
+type Message {
+  id: ID!
+  text: String
+  fileURL: String
+  messageBy: User!
+  messageOn: Chatboard!
+}
+
+type Link {
+  id: ID!
+  title: String!
+  address: String!
+  user: User!
+}
+
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+input FetchUser {
+  id: String!
+}
+
+input FetchPost {
+  id: String!
+}
+
+input FetchWallet {
+  id: String!
+}
+
+input FetchComment {
+  id: String!
+}
+
+input FetchChatboard {
+  id: String!
+}
+
+input FetchMessage {
+  id: String!
+}
+
+input NewUser {
+  username: String!
+  # @id
+  name: String!
+  about: String
+  email: String!
+  avatarImageURL: String!
+  password: String!
+}
+
+input NewWallet {
+  privateKey: String!
+  privateAddress: String!
+  publicKey: String!
+  publicAddress: String!
+}
+
+input Login {
+  username: String!
+  password: String!
+}
+
+input NewPost {
+  _id: String!
+  postedBy: ID!
+  imageURL: String!
+  description: String
+  likes: Int!
+}
+
+input NewComment {
+  _id: String!
+  text: String!
+  commentBy: ID!
+  commentOn: ID!
+}
+
+input NewChatboard {
+  _id: String!
+  name: String!
+  imageURL: String!
+  description: String
+  # @hasInverse(field: commentOn)
+}
+
+input NewMessage {
+  _id: String!
+  text: String
+  fileURL: String
+  messageBy: ID!
+  messageOn: ID!
+}
+
+input NewLink {
+  title: String!
+  address: String!
+}
+
+input RefreshTokenInput {
+  token: String!
+}
+
+type Query {
+  users: [User!]!
+  posts: [Post!]!
+  comments: [Comment!]!
+  chatboards: [Chatboard!]!
+  messages: [Message!]!
+  user(input: FetchUser): User!
+  wallet(input: FetchWallet): Wallet!
+  post(input: FetchPost): Post!
+  comment(input: FetchComment!): Comment!
+  chatboard(input: FetchChatboard!): Chatboard!
+  message(input: FetchMessage!): Message!
+  links: [Link!]!
+}
+
+type Mutation {
+  createUser(input: NewUser!): User!
+  createWallet: Wallet!
+  createPost(input: NewPost!): Post!
+  createComment(input: NewComment!): Comment!
+  createChatboard(input: NewChatboard!): Chatboard!
+  createMessage(input: NewMessage!): Message!
+  createLink(input: NewLink!): Link!
+  login(input: Login!): String!
+  refreshToken(input: RefreshTokenInput!): String!
+}
