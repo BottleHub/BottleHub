@@ -1,7 +1,7 @@
 package configs
 
 import (
-	"bottlehub/client"
+	"bottlehub/blockchain/client"
 	"bottlehub/graph/model"
 	"context"
 	"fmt"
@@ -38,7 +38,7 @@ func ConnectDB() *DB {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to MongoDB")
+	fmt.Println("Connected to MongoDB!")
 	return &DB{client: client}
 }
 
@@ -95,8 +95,8 @@ func (db *DB) CreatePost(input *model.NewPost) (*model.Post, error) {
 
 func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	password, _ := HashPassword(input.Password)
-	privateKey, publicWallet := client.CreateWallet()
 	input.Password = password
+
 	res, err := db.resErrHelper("users", input)
 
 	user := &model.User{
@@ -107,11 +107,32 @@ func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 		Email:          input.Email,
 		AvatarImageURL: input.AvatarImageURL,
 		Password:       password,
-		PublicWallet:   publicWallet,
-		PrivateKey:     privateKey,
 	}
 
 	return user, err
+}
+
+func (db *DB) CreateWallet() (*model.Wallet, error) {
+	var input *model.NewWallet
+
+	privateKey, privateAddress, publicKey, publicAddress := client.CreateWallet()
+
+	input.PrivateKey = privateKey
+	input.PrivateAddress = privateAddress
+	input.PublicKey = publicKey
+	input.PublicAddress = publicAddress
+
+	res, err := db.resErrHelper("wallets", input)
+
+	wallet := &model.Wallet{
+		ID:             res.InsertedID.(primitive.ObjectID).Hex(),
+		PrivateKey:     input.PrivateKey,
+		PrivateAddress: input.PrivateAddress,
+		PublicKey:      input.PublicKey,
+		PublicAddress:  input.PublicAddress,
+	}
+
+	return wallet, err
 }
 
 func (db *DB) CreateChatboard(input *model.NewChatboard) (*model.Chatboard, error) {

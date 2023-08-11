@@ -1,5 +1,5 @@
 type User {
-  id: String!
+  id: ID!
   username: String!
   # @id
   name: String!
@@ -13,12 +13,19 @@ type User {
   # @hasInverse(field: followers)
   followers: [User]
   # @hasInverse(field: following)
-  publicWallet: String!
+  wallet: Wallet!
+}
+
+type Wallet {
+  id: ID!
   privateKey: String!
+  privateAddress: String!
+  publicKey: String!
+  publicAddress: String!
 }
 
 type Post {
-  id: String!
+  id: ID!
   postedBy: User!
   imageURL: String!
   description: String
@@ -35,7 +42,7 @@ type Comment {
 }
 
 type Chatboard {
-  id: String!
+  id: ID!
   name: String!
   imageURL: String!
   description: String
@@ -45,7 +52,7 @@ type Chatboard {
 }
 
 type Message {
-  id: String!
+  id: ID!
   text: String
   fileURL: String
   messageBy: User!
@@ -73,6 +80,10 @@ input FetchPost {
   id: String!
 }
 
+input FetchWallet {
+  id: String!
+}
+
 input FetchComment {
   id: String!
 }
@@ -95,12 +106,20 @@ input NewUser {
   password: String!
 }
 
+input NewWallet {
+  privateKey: String!
+  privateAddress: String!
+  publicKey: String!
+  publicAddress: String!
+}
+
 input Login {
   username: String!
   password: String!
 }
 
 input NewPost {
+  _id: String!
   postedBy: ID!
   imageURL: String!
   description: String
@@ -108,6 +127,7 @@ input NewPost {
 }
 
 input NewComment {
+  _id: String!
   text: String!
   commentBy: ID!
   commentOn: ID!
@@ -134,7 +154,7 @@ input NewLink {
   address: String!
 }
 
-input RefreshTokenInput{
+input RefreshTokenInput {
   token: String!
 }
 
@@ -145,6 +165,7 @@ type Query {
   chatboards: [Chatboard!]!
   messages: [Message!]!
   user(input: FetchUser): User!
+  wallet(input: FetchWallet): Wallet!
   post(input: FetchPost): Post!
   comment(input: FetchComment!): Comment!
   chatboard(input: FetchChatboard!): Chatboard!
@@ -154,6 +175,7 @@ type Query {
 
 type Mutation {
   createUser(input: NewUser!): User!
+  createWallet: Wallet!
   createPost(input: NewPost!): Post!
   createComment(input: NewComment!): Comment!
   createChatboard(input: NewChatboard!): Chatboard!

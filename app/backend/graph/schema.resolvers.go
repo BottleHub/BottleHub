@@ -32,6 +32,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return user, err
 }
 
+// CreateWallet implements MutationResolver.
+func (*mutationResolver) CreateWallet(ctx context.Context) (*model.Wallet, error) {
+	wallet, err := db.CreateWallet()
+	return wallet, err
+}
+
 // CreateProject is the resolver for the createProject field.
 func (r *mutationResolver) CreateChatboard(ctx context.Context, input model.NewChatboard) (*model.Chatboard, error) {
 	chatboard, err := db.CreateChatboard(&input)
@@ -111,6 +117,11 @@ func (r *queryResolver) Post(ctx context.Context, input *model.FetchPost) (*mode
 func (r *queryResolver) User(ctx context.Context, input *model.FetchUser) (*model.User, error) {
 	user, err := db.SingleUser(input.ID)
 	return user, err
+}
+
+// Wallet implements QueryResolver.
+func (*queryResolver) Wallet(ctx context.Context, input *model.FetchWallet) (*model.Wallet, error) {
+	panic("unimplemented")
 }
 
 // Owner is the resolver for the owner field.
