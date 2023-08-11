@@ -175,7 +175,7 @@ type Query {
 
 type Mutation {
   createUser(input: NewUser!): User!
-  createWallet(input: NewWallet!): Wallet!
+  createWallet: Wallet!
   createPost(input: NewPost!): Post!
   createComment(input: NewComment!): Comment!
   createChatboard(input: NewChatboard!): Chatboard!

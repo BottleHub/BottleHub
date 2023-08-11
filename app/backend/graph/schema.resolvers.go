@@ -33,8 +33,9 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 }
 
 // CreateWallet implements MutationResolver.
-func (*mutationResolver) CreateWallet(ctx context.Context, input model.NewWallet) (*model.Wallet, error) {
-	panic("unimplemented")
+func (*mutationResolver) CreateWallet(ctx context.Context) (*model.Wallet, error) {
+	wallet, err := db.CreateWallet()
+	return wallet, err
 }
 
 // CreateProject is the resolver for the createProject field.

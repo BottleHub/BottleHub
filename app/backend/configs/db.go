@@ -95,8 +95,8 @@ func (db *DB) CreatePost(input *model.NewPost) (*model.Post, error) {
 
 func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	password, _ := HashPassword(input.Password)
-	privateKey, privateAddress, publicKey, publicAddress := client.CreateWallet()
 	input.Password = password
+
 	res, err := db.resErrHelper("users", input)
 
 	user := &model.User{
@@ -112,7 +112,16 @@ func (db *DB) CreateUser(input *model.NewUser) (*model.User, error) {
 	return user, err
 }
 
-func (db *DB) CreateWallet(input *model.NewWallet) (*model.Wallet, error) {
+func (db *DB) CreateWallet() (*model.Wallet, error) {
+	var input *model.NewWallet
+
+	privateKey, privateAddress, publicKey, publicAddress := client.CreateWallet()
+
+	input.PrivateKey = privateKey
+	input.PrivateAddress = privateAddress
+	input.PublicKey = publicKey
+	input.PublicAddress = publicAddress
+
 	res, err := db.resErrHelper("wallets", input)
 
 	wallet := &model.Wallet{

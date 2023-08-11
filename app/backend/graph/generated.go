@@ -83,7 +83,7 @@ type ComplexityRoot struct {
 		CreateMessage   func(childComplexity int, input model.NewMessage) int
 		CreatePost      func(childComplexity int, input model.NewPost) int
 		CreateUser      func(childComplexity int, input model.NewUser) int
-		CreateWallet    func(childComplexity int, input model.NewWallet) int
+		CreateWallet    func(childComplexity int) int
 		Login           func(childComplexity int, input model.Login) int
 		RefreshToken    func(childComplexity int, input model.RefreshTokenInput) int
 	}
@@ -137,7 +137,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
-	CreateWallet(ctx context.Context, input model.NewWallet) (*model.Wallet, error)
+	CreateWallet(ctx context.Context) (*model.Wallet, error)
 	CreatePost(ctx context.Context, input model.NewPost) (*model.Post, error)
 	CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error)
 	CreateChatboard(ctx context.Context, input model.NewChatboard) (*model.Chatboard, error)
@@ -386,12 +386,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Mutation_createWallet_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateWallet(childComplexity, args["input"].(model.NewWallet)), true
+		return e.complexity.Mutation.CreateWallet(childComplexity), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -906,21 +901,6 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewUser2bottlehubᚋgraphᚋmodelᚐNewUser(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_createWallet_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 model.NewWallet
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewWallet2bottlehubᚋgraphᚋmodelᚐNewWallet(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2152,7 +2132,7 @@ func (ec *executionContext) _Mutation_createWallet(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateWallet(rctx, fc.Args["input"].(model.NewWallet))
+		return ec.resolvers.Mutation().CreateWallet(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2190,17 +2170,6 @@ func (ec *executionContext) fieldContext_Mutation_createWallet(ctx context.Conte
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Wallet", field.Name)
 		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createWallet_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -8512,11 +8481,6 @@ func (ec *executionContext) unmarshalNNewPost2bottlehubᚋgraphᚋmodelᚐNewPos
 
 func (ec *executionContext) unmarshalNNewUser2bottlehubᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNNewWallet2bottlehubᚋgraphᚋmodelᚐNewWallet(ctx context.Context, v interface{}) (model.NewWallet, error) {
-	res, err := ec.unmarshalInputNewWallet(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
