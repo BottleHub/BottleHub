@@ -1,6 +1,6 @@
 # BottleHub Official
 
-This is the official repository for everything BottleHub.
+This was the official repository for everything BottleHub. It's going to be archived for convenience sake. We deivided it into muliple APIs, to make it easier to use while making some renaming choices.
 
 ## What's BottleHub?
 
